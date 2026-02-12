@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ FluxChain · Supply Management System</title>
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        /* ---------- GLOBAL RESET / VARIABLES ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e4bb4;
+            --primary-light: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --radius: 12px;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --transition: all 0.2s ease;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--gray-800);
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+        }
+
+        /* ---------- MAIN DASHBOARD LAYOUT ---------- */
+        .system-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        /* header card */
+        .header-card {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            border-left: 6px solid var(--primary);
+        }
+
+        .logo-area h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--gray-900);
+        }
+
+        .logo-area h1 i {
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        .stats-badge {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--gray-50);
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        .stat-item i {
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        /* ---------- 3-COLUMN DASHBOARD GRID ---------- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 2.2fr 1.1fr;
+            gap: 1.75rem;
+        }
+
+        /* ---------- CARD STYLE ---------- */
+        .card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1.5rem 1.2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--gray-200);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.4rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .card-header h2 i {
+            color: var(--primary);
+        }
+
+        /* ---------- FORM ELEMENTS ---------- */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .input-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .input-field label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .input-field input,
+        .input-field select {
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .input-field input:focus,
+        .input-field select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            border: none;
+            padding: 0.8rem 1.4rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+            color: var(--gray-700);
+            border: 1.5px solid var(--gray-300);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+            border: none;
+        }
+
+        .btn-sm {
+            padding: 0.45rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        /* ---------- TABLES ---------- */
+        .table-container {
+            overflow-x: auto;
+            max-height: 320px;
+            overflow-y: auto;
+            border-radius: 10px;
+            scrollbar-width: thin;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead {
+            background: var(--gray-50);
+            position: sticky;
+            top: 0;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        th {
+            padding: 0.9rem 0.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        td {
+            padding: 0.8rem 0.5rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .badge {
+            padding: 0.25rem 0.7rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            display: inline-block;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .action-icons i {
+            margin: 0 5px;
+            cursor: pointer;
+            color: var(--gray-600);
+            transition: var(--transition);
+        }
+
+        .action-icons i.fa-edit:hover {
+            color: var(--primary);
+        }
+
+        .action-icons i.fa-trash-alt:hover {
+            color: var(--danger);
+        }
+
+        .fa-check-circle:hover {
+            color: var(--success);
+        }
+
+        /* ---------- SUPPLIER LIST (RIGHT PANEL) ---------- */
+        .supplier-list {
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        .supplier-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0.5rem;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .supplier-item:last-child {
+            border-bottom: none;
+        }
+
+        .supplier-info strong {
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .supplier-info span {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+        }
+
+        .rating-star {
+            color: #fbbf24;
+        }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 1000px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            body { padding: 1rem; }
+        }
+        .mt-2 { margin-top: 0.8rem; }
+        .text-center { text-align: center; }
+        .highlight {
+            background: #dbeafe;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="system-wrapper">
+    <!-- HEADER with stats -->
+    <div class="header-card">
+        <div class="logo-area">
+            <h1><i class="fas fa-boxes"></i> FluxChain SCM</h1>
+            <div style="font-size: 0.9rem; color: var(--gray-600); margin-top: 4px;">end-to-end visibility · single pane</div>
+        </div>
+        <div class="stats-badge">
+            <div class="stat-item"><i class="fas fa-cubes"></i> total SKU: <span id="total-products-stat">0</span></div>
+            <div class="stat-item"><i class="fas fa-truck"></i> suppliers: <span id="total-suppliers-stat">0</span></div>
+            <div class="stat-item"><i class="fas fa-exclamation-triangle"></i> low stock: <span id="low-stock-stat">0</span></div>
+        </div>
+    </div>
+
+    <!-- MAIN GRID: Add Inventory | Inventory table | Suppliers -->
+    <div class="dashboard-grid">
+        <!-- LEFT CARD: Add / Update Inventory -->
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-plus-circle"></i> stock movement</h2>
+                <span class="badge" id="form-mode-badge" style="background: #e0e7ff; color: var(--primary-dark);">ADD MODE</span>
+            </div>
+            <div class="form-group">
+                <div class="input-field">
+                    <label><i class="fas fa-tag"></i> product name</label>
+                    <input type="text" id="product-name" placeholder="e.g. Organic Cotton Tee" autocomplete="off">
+                </div>
+                <div class="input-field">
+                    <label><i class="fas fa-barcode"></i> SKU (unique)</label>
+                    <input type="text" id="product-sku" placeholder="SKU-1024">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="input-field">
+                        <label>quantity</label>
+                        <input type="number" id="product-qty" placeholder="0" min="0">
+                    </div>
+                    <div class="input-field">
+                        <label>threshold</label>
+                        <input type="number" id="product-threshold" placeholder="low stock at" min="1" value="10">
+                    </div>
+                </div>
+                <div class="input-field">
+                    <label><i class="fas fa-building"></i> supplier</label>
+                    <select id="product-supplier">
+                        <option value="Nexum Traders">Nexum Traders</option>
+                        <option value="Apex Logistics">Apex Logistics</option>
+                        <option value="Polaris Supply">Polaris Supply</option>
+                        <option value="OmniCore">OmniCore</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 10px;">
+                    <button id="add-inventory-btn" class="btn btn-primary"><i class="fas fa-save"></i> save item</button>
+                    <button id="clear-form-btn" class="btn"><i class="fas fa-undo-alt"></i> clear</button>
+                </div>
+                <!-- hidden update index -->
+                <input type="hidden" id="update-index" value="-1">
+            </div>
+            <div style="margin-top: 10px; background: var(--gray-50); padding: 12px; border-radius: 10px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                    <span><i class="fas fa-info-circle"></i> low stock alert ≤ threshold</span>
+                    <span id="live-inventory-count" style="font-weight: 700;">0 items</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MIDDLE CARD: INVENTORY TABLE (live) -->
+        <div class="card" style="padding-bottom: 0.8rem;">
+            <div class="card-header">
+                <h2><i class="fas fa-clipboard-list"></i> inventory status</h2>
+                <div>
+                    <button id="refresh-view-btn" class="btn btn-sm"><i class="fas fa-sync-alt"></i> refresh</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Status</th>
+                            <th>Supplier</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-body">
+                        <!-- dynamic rows from JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 15px;">
+                <button id="generate-sample-btn" class="btn btn-sm" style="background: var(--gray-100);"><i class="fas fa-flask"></i> sample data</button>
+                <button id="reset-all-btn" class="btn btn-sm" style="background: #fee2e2; border-color: #fecaca;"><i class="fas fa-broom"></i> reset</button>
+            </div>
+        </div>
+
+        <!-- RIGHT CARD: SUPPLIER MANAGEMENT + ACTIVE SUPPLIERS -->
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-truck"></i> supplier network</h2>
+                <i class="fas fa-user-plus" style="color: var(--primary); cursor: pointer;" id="open-add-supplier" title="add supplier"></i>
+            </div>
+            <!-- quick add supplier inline -->
+            <div id="quick-supplier-form" style="display: none; background: var(--gray-50); padding: 12px; border-radius: 12px; margin-bottom: 15px;">
+                <div class="input-field" style="margin-bottom: 8px;">
+                    <label>supplier name</label>
+                    <input type="text" id="new-supplier-name" placeholder="e.g. FastShip">
+                </div>
+                <div class="input-field" style="margin-bottom: 8px;">
+                    <label>contact</label>
+                    <input type="text" id="new-supplier-contact" placeholder="email / phone">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button id="save-supplier-btn" class="btn btn-sm btn-success"><i class="fas fa-check"></i> save</button>
+                    <button id="cancel-supplier-btn" class="btn btn-sm"><i class="fas fa-times"></i> cancel</button>
+                </div>
+            </div>
+
+            <div style="font-weight: 600; margin-bottom: 6px; display: flex; justify-content: space-between;">
+                <span><i class="fas fa-address-book"></i> registered suppliers</span>
+                <span id="supplier-count-badge" class="badge">0</span>
+            </div>
+            <ul class="supplier-list" id="supplier-list-container">
+                <!-- dynamic suppliers -->
+            </ul>
+            <div style="margin-top: 16px; border-top: 1px dashed var(--gray-200); padding-top: 14px;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <i class="fas fa-chart-line" style="color: var(--primary);"></i>
+                    <span style="font-size: 0.85rem; font-weight: 500;">inbound logistics performance</span>
+                </div>
+                <div style="margin-top: 8px; display: flex; justify-content: space-between;">
+                    <span style="font-size: 0.8rem;">on-time delivery</span>
+                    <span style="font-weight: 700;">94%</span>
+                </div>
+                <div style="width: 100%; background: var(--gray-200); height: 6px; border-radius: 10px; margin-top: 5px;">
+                    <div style="width: 94%; background: var(--primary); height: 6px; border-radius: 10px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer / small status -->
+    <div style="display: flex; justify-content: flex-end; color: var(--gray-600); font-size: 0.75rem; gap: 20px;">
+        <span><i class="fas fa-check-circle" style="color: var(--success);"></i> system ready</span>
+        <span><i class="fas fa-warehouse"></i> warehouse MX-23</span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        "use strict";
+
+        // ---------- GLOBAL STATE : supply chain data ----------
+        // inventory items
+        let inventory = [
+            { sku: "SKU-001", name: "Wireless Mouse", qty: 42, threshold: 15, supplier: "Nexum Traders" },
+            { sku: "SKU-002", name: "Mechanical Keyboard", qty: 12, threshold: 10, supplier: "Apex Logistics" },
+            { sku: "SKU-003", name: "USB-C Hub", qty: 5, threshold: 8, supplier: "Polaris Supply" },
+            { sku: "SKU-004", name: "Monitor Stand", qty: 21, threshold: 12, supplier: "OmniCore" },
+            { sku: "SKU-005", name: "Laptop Sleeve", qty: 8, threshold: 10, supplier: "Nexum Traders" }
+        ];
+
+        // supplier master list (enriched)
+        let suppliers = [
+            { name: "Nexum Traders", contact: "hello@nexum.io", rating: 4.8 },
+            { name: "Apex Logistics", contact: "dispatch@apex.co", rating: 4.5 },
+            { name: "Polaris Supply", contact: "orders@polaris.com", rating: 4.2 },
+            { name: "OmniCore", contact: "supply@omnicore.net", rating: 4.6 }
+        ];
+
+        // ---------- DOM ELEMENTS ----------
+        const productName = document.getElementById('product-name');
+        const productSku = document.getElementById('product-sku');
+        const productQty = document.getElementById('product-qty');
+        const productThreshold = document.getElementById('product-threshold');
+        const productSupplier = document.getElementById('product-supplier');
+        const updateIndex = document.getElementById('update-index');
+        const addBtn = document.getElementById('add-inventory-btn');
+        const clearBtn = document.getElementById('clear-form-btn');
+        const inventoryBody = document.getElementById('inventory-body');
+        const totalProductsSpan = document.getElementById('total-products-stat');
+        const totalSuppliersSpan = document.getElementById('total-suppliers-stat');
+        const lowStockStat = document.getElementById('low-stock-stat');
+        const formModeBadge = document.getElementById('form-mode-badge');
+        const liveInventoryCount = document.getElementById('live-inventory-count');
+        const supplierListContainer = document.getElementById('supplier-list-container');
+        const supplierCountBadge = document.getElementById('supplier-count-badge');
+
+        // supplier quick add
+        const openAddSupplier = document.getElementById('open-add-supplier');
+        const quickSupplierForm = document.getElementById('quick-supplier-form');
+        const newSupplierName = document.getElementById('new-supplier-name');
+        const newSupplierContact = document.getElementById('new-supplier-contact');
+        const saveSupplierBtn = document.getElementById('save-supplier-btn');
+        const cancelSupplierBtn = document.getElementById('cancel-supplier-btn');
+
+        // Buttons
+        const refreshBtn = document.getElementById('refresh-view-btn');
+        const generateSampleBtn = document.getElementById('generate-sample-btn');
+        const resetAllBtn = document.getElementById('reset-all-btn');
+
+        // ---------- HELPER FUNCTIONS ----------
+        function loadSupplierDropdown() {
+            // populate select options with latest supplier names
+            let html = '';
+            suppliers.forEach(sup => {
+                html += `<option value="${sup.name}">${sup.name}</option>`;
+            });
+            productSupplier.innerHTML = html;
+        }
+
+        // render inventory table + all stats
+        function renderInventory() {
+            let tbody = '';
+            let lowStockCount = 0;
+
+            inventory.forEach((item, idx) => {
+                const status = item.qty <= item.threshold ? 'low stock' : 'in stock';
+                const badgeClass = item.qty <= item.threshold ? 'badge-danger' : 'badge-success';
+                const statusBadge = `<span class="badge ${badgeClass}">${status}</span>`;
+                if (item.qty <= item.threshold) lowStockCount++;
+
+                tbody += `<tr>
+                    <td><code style="background: #eef2ff; padding: 3px 6px; border-radius: 6px;">${item.sku}</code></td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.qty}</td>
+                    <td>${statusBadge}</td>
+                    <td>${item.supplier}</td>
+                    <td class="action-icons">
+                        <i class="fas fa-edit" onclick="editItem(${idx})" title="edit"></i>
+                        <i class="fas fa-trash-alt" onclick="deleteItem(${idx})" title="delete"></i>
+                        <i class="fas fa-check-circle" onclick="receiveStock(${idx})" title="receive stock (+10)"></i>
+                    </td>
+                </tr>`;
+            });
+
+            inventoryBody.innerHTML = tbody || `<tr><td colspan="6" style="text-align: center; padding: 32px;">📦 inventory empty – add items or load sample</td></tr>`;
+            
+            // update stats
+            totalProductsSpan.innerText = inventory.length;
+            lowStockStat.innerText = lowStockCount;
+            liveInventoryCount.innerText = `${inventory.length} items`;
+        }
+
+        function renderSuppliers() {
+            let supplierItems = '';
+            suppliers.forEach((sup, index) => {
+                const ratingStars = '★'.repeat(Math.floor(sup.rating)) + '☆'.repeat(5 - Math.floor(sup.rating));
+                supplierItems += `<li class="supplier-item">
+                    <div class="supplier-info">
+                        <strong>${sup.name}</strong>
+                        <span><i class="fas fa-envelope"></i> ${sup.contact || '—'}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="rating-star">${ratingStars}</span>
+                        <i class="fas fa-trash-alt" style="font-size: 0.8rem; color: var(--gray-400); cursor: pointer;" onclick="removeSupplier(${index})" title="remove supplier"></i>
+                    </div>
+                </li>`;
+            });
+            supplierListContainer.innerHTML = supplierItems || '<li style="padding: 1rem; text-align: center; color: var(--gray-500);">no suppliers yet</li>';
+            supplierCountBadge.innerText = suppliers.length;
+            totalSuppliersSpan.innerText = suppliers.length;
+        }
+
+        // reset form to add mode
+        function resetForm() {
+            productName.value = '';
+            productSku.value = '';
+            productQty.value = '';
+            productThreshold.value = 10;
+            productSupplier.value = suppliers.length ? suppliers[0].name : '';
+            updateIndex.value = '-1';
+            formModeBadge.innerHTML = 'ADD MODE';
+            formModeBadge.style.background = '#e0e7ff';
+            formModeBadge.style.color = 'var(--primary-dark)';
+        }
+
+        // ---------- CRUD OPERATIONS (exposed globally for onclick) ----------
+        window.editItem = function(index) {
+            const item = inventory[index];
+            productName.value = item.name;
+            productSku.value = item.sku;
+            productQty.value = item.qty;
+            productThreshold.value = item.threshold;
+            productSupplier.value = item.supplier;
+            updateIndex.value = index;
+            formModeBadge.innerHTML = `EDIT MODE (SKU: ${item.sku})`;
+            formModeBadge.style.background = '#fef3c7';
+            formModeBadge.style.color = '#92400e';
+        };
+
+        window.deleteItem = function(index) {
+            if (confirm('Remove item from inventory?')) {
+                inventory.splice(index, 1);
+                renderInventory();
+                if (updateIndex.value == index) resetForm();
+            }
+        };
+
+        window.receiveStock = function(index) {
+            inventory[index].qty += 10;
+            renderInventory();
+        };
+
+        // Remove supplier (if not used? we check if supplier is linked to any product)
+        window.removeSupplier = function(index) {
+            const supplierToRemove = suppliers[index];
+            const isUsed = inventory.some(item => item.supplier === supplierToRemove.name);
+            if (isUsed) {
+                alert(`⚠️ Cannot remove ${supplierToRemove.name} — linked to existing product.`);
+                return;
+            }
+            if (confirm(`Remove supplier ${supplierToRemove.name}?`)) {
+                suppliers.splice(index, 1);
+                loadSupplierDropdown();
+                renderSuppliers();
+                if (!suppliers.length) resetForm();
+            }
+        };
+
+        // ---------- NORMAL ADD / UPDATE ----------
+        function handleAddUpdate() {
+            const name = productName.value.trim();
+            const sku = productSku.value.trim();
+            const qty = parseInt(productQty.value, 10);
+            const threshold = parseInt(productThreshold.value, 10);
+            const supplier = productSupplier.value;
+
+            if (!name || !sku || isNaN(qty) || isNaN(threshold)) {
+                alert('❌ Please fill all fields with valid values.');
+                return;
+            }
+
+            const idx = parseInt(updateIndex.value, 10);
+            // SKU uniqueness check (if new or different SKU)
+            if (idx === -1) {
+                if (inventory.some(item => item.sku === sku)) {
+                    alert(`SKU '${sku}' already exists. Use edit mode or change SKU.`);
+                    return;
+                }
+                // add mode
+                inventory.push({
+                    sku, name, qty, threshold, supplier
+                });
+            } else {
+                // update: check if SKU changed and already exists
+                if (inventory[idx].sku !== sku && inventory.some((item, i) => i !== idx && item.sku === sku)) {
+                    alert(`SKU '${sku}' is used by another product.`);
+                    return;
+                }
+                inventory[idx] = { ...inventory[idx], name, sku, qty, threshold, supplier };
+            }
+
+            renderInventory();
+            resetForm();
+        }
+
+        // ---------- SUPPLIER ADD ----------
+        function addSupplier() {
+            const name = newSupplierName.value.trim();
+            const contact = newSupplierContact.value.trim();
+            if (!name) { alert('Supplier name required'); return; }
+            if (suppliers.some(s => s.name.toLowerCase() === name.toLowerCase())) {
+                alert('Supplier already exists');
+                return;
+            }
+            suppliers.push({ name, contact: contact || '—', rating: (Math.random() * 1 + 3.8).toFixed(1) });
+            loadSupplierDropdown();
+            renderSuppliers();
+            // hide form
+            quickSupplierForm.style.display = 'none';
+            newSupplierName.value = ''; newSupplierContact.value = '';
+        }
+
+        // ---------- SAMPLE DATA / RESET ----------
+        function generateSampleInventory() {
+            inventory = [
+                { sku: "SKU-101", name: "Ergonomic Chair", qty: 17, threshold: 8, supplier: "OmniCore" },
+                { sku: "SKU-102", name: "Standing Desk", qty: 6, threshold: 5, supplier: "Polaris Supply" },
+                { sku: "SKU-103", name: "Monitor 24''", qty: 9, threshold: 10, supplier: "Apex Logistics" },
+                { sku: "SKU-104", name: "Webcam 4K", qty: 3, threshold: 6, supplier: "Nexum Traders" },
+                { sku: "SKU-105", name: "Headset", qty: 30, threshold: 12, supplier: "Nexum Traders" }
+            ];
+            renderInventory();
+            resetForm();
+        }
+
+        function fullReset() {
+            if (confirm('Reset all data? Inventory and suppliers will revert to default.')) {
+                inventory = [...inventory.slice(0,5)]; // default 5 items as defined
+                suppliers = [
+                    { name: "Nexum Traders", contact: "hello@nexum.io", rating: 4.8 },
+                    { name: "Apex Logistics", contact: "dispatch@apex.co", rating: 4.5 },
+                    { name: "Polaris Supply", contact: "orders@polaris.com", rating: 4.2 },
+                    { name: "OmniCore", contact: "supply@omnicore.net", rating: 4.6 }
+                ];
+                loadSupplierDropdown();
+                renderInventory();
+                renderSuppliers();
+                resetForm();
+            }
+        }
+
+        // ---------- EVENT LISTENERS ----------
+        addBtn.addEventListener('click', handleAddUpdate);
+        clearBtn.addEventListener('click', resetForm);
+
+        // supplier quick add toggle
+        openAddSupplier.addEventListener('click', () => {
+            quickSupplierForm.style.display = 'block';
+        });
+        cancelSupplierBtn.addEventListener('click', () => {
+            quickSupplierForm.style.display = 'none';
+            newSupplierName.value = ''; newSupplierContact.value = '';
+        });
+        saveSupplierBtn.addEventListener('click', addSupplier);
+
+        // refresh just re-renders
+        refreshBtn.addEventListener('click', () => { renderInventory(); renderSuppliers(); });
+
+        generateSampleBtn.addEventListener('click', generateSampleInventory);
+        resetAllBtn.addEventListener('click', fullReset);
+
+        // initialize supplier dropdown, render all
+        loadSupplierDropdown();
+        renderInventory();
+        renderSuppliers();
+        resetForm();
+
+        // make functions global so onclick works
+        window.receiveStock = window.receiveStock || receiveStock;
+        window.editItem = window.editItem || editItem;
+        window.deleteItem = window.deleteItem || deleteItem;
+        window.removeSupplier = window.removeSupplier || removeSupplier;
+    })();
+</script>
+
+<!-- tiny inline style for better rating stars -->
+<style>
+    .rating-star {
+        letter-spacing: 2px;
+        font-size: 0.9rem;
+    }
+    code {
+        font-family: 'Inter', monospace;
+    }
+    .fa-edit, .fa-trash-alt, .fa-check-circle {
+        transition: 0.1s;
+    }
+</style>
+
+</body>
+</html>
